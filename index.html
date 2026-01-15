@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food - Apps Grid</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding-top: 80px;
+            background-color: #eeecec;
+        }
+
+        .navbar {
+            background-color: #ffffff;
+            padding: 0 20px;
+            box-shadow: 0 2px 5px rgba(238, 234, 234, 0.1);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            transition: all 0.3s ease;
+
+        }
+
+        .navbar-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            height: 70px;
+        }
+
+        .logo {
+            color: #0f20bb;
+            font-size: 1.8rem;
+            font-weight: bold;
+            text-decoration: none;
+            flex-shrink: 0;
+        }
+
+        /* Search Bar */
+        .search-container {
+            flex: 1;
+            max-width: 500px;
+            margin: 0 20px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 45px 12px 15px;
+            border: 1px solid #0f20bb;
+            border-radius: 10px;
+            font-size: 1rem;
+            outline: none;
+            background-color: #ffffff;
+            color: #0f20bb;
+        }
+
+        .search-input::placeholder {
+            color: #0f20bb;
+        }
+
+        .search-btn {
+            position: absolute;
+            right: 5px;
+            top: 5px;
+            bottom: 5px;
+            width: 40px;
+            background-color: #0f20bb;
+            border: none;
+            border-radius: 20%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s;
+        }
+
+        .search-btn:hover {
+            background-color: #5547d6;
+        }
+
+        .search-btn i {
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            flex-shrink: 0;
+        }
+
+        .nav-item {
+            margin-left: 30px;
+        }
+
+        .nav-link {
+            color: #0f20bb;
+            text-decoration: none;
+            font-size: 1.1rem;
+            padding: 10px 0;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            color: #da0d0d;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 3px;
+            bottom: 0;
+            left: 0;
+            background-color: #d10f0f;
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        /* Hamburger Menu */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .hamburger span {
+            width: 30px;
+            height: 3px;
+            background-color: rgb(10, 10, 10);
+            margin: 4px 0;
+            transition: 0.3s;
+        }
+
+        /* Content Grid */
+        .content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px 10px;
+        }
+
+        .apps-grid {
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+            gap: 1rem;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+            grid-auto-rows: min-content;
+        }
+
+        .app-card {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-lg);
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            height: 230px;
+            text-align: center;
+
+        }
+
+        .app-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .app-icon {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 4px;
+
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+        }
+
+        .app-name {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+            min-height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .app-info {
+            font-size: 0.85rem;
+            color: #999;
+            margin-bottom: 20px;
+        }
+
+        .app-button {
+            background-color: #0f20bb;
+            color: white;
+            border: none;
+            padding: 10px 30px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .app-button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Mobile (ซ่อน Search Bar บนมือถือ) */
+        @media (max-width: 768px) {
+            .search-container {
+                display: none;
+                /* ซ่อนช่องค้นหาบนมือถือ */
+            }
+
+            .apps-grid {
+                column-gap: 10px;
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .app-card {
+                max-width: none;
+                padding: 10px 10px;
+            }
+
+            .nav-menu {
+                position: fixed;
+                left: -100%;
+                top: 70px;
+                flex-direction: column;
+                background-color: #f7f3f3;
+                width: 100%;
+                text-align: center;
+                transition: 0.3s;
+                box-shadow: 0 10px 27px rgba(0, 0, 0, 0.05);
+                padding: 20px 0;
+            }
+
+            .nav-menu.active {
+                left: 0;
+            }
+
+            .nav-item {
+                margin: 15px 0;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .hamburger.active span:nth-child(1) {
+                transform: rotate(45deg) translate(5px, 5px);
+            }
+
+            .hamburger.active span:nth-child(2) {
+                opacity: 0;
+            }
+
+            .hamburger.active span:nth-child(3) {
+                transform: rotate(-45deg) translate(7px, -6px);
+            }
+        }
+
+        /* iPad และ PC (แสดง Search Bar) */
+        @media (min-width: 769px) {
+            .search-container {
+                display: flex;
+                /* แสดงบน iPad และ PC */
+            }
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 30px;
+            border: 1px solid #888;
+            width: 90%;
+            max-width: 500px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-header {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #0e2db4;
+            text-align: center;
+
+        }
+
+        .modal-body {
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .btn-cancel {
+            background-color: #6c757d;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn-cancel:hover {
+            background-color: #5a6268;
+        }
+
+        .btn-print {
+            background-color: #0f20bb;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn-print:hover {
+            background-color: #0056b3;
+        }
+    </style>
+    <!-- Font Awesome สำหรับไอคอนค้นหา -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="#" class="logo">Food</a>
+
+            <!-- Search Bar จะแสดงเฉพาะบน iPad/PC -->
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="ຄົ້ນຫາ...">
+                <button class="search-btn">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+
+            <ul class="nav-menu" id="nav-menu">
+                <li class="nav-item"><a href="#" class="nav-link">ໜ້າທໍາອິດ</a></li>
+                <li class="nav-item"><a href="#" class="nav-link" id="openModalBtn">ແຊັດບິນ</a></li>
+                <li class="nav-item"><a href="#" class="nav-link">ບໍລິການ</a></li>
+                <li class="nav-item"><a href="#" class="nav-link">ປະຫວັດ</a></li>
+                <li class="nav-item"><a href="#" class="nav-link">ອອກລະບົບ</a></li>
+            </ul>
+
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Modal Popup -->
+    <div id="orderModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">ແຊັດບິນລູກຄ້າ</div>
+            <div class="modal-body">
+                <form id="orderForm">
+                    <div class="form-group">
+                        <label for="personCount">ຈຳນວນຄົນ:</label>
+                        <input type="number" id="personCount" name="personCount" placeholder="ຈໍານວນຄົນ....." required>
+                    </div>
+                    <div class="form-group">
+                        <label for="water">ນ້ຳດື່ມ:</label>
+                        <input type="number" id="water" name="water" placeholder="ຈໍານວນຂົ້ວ....." required>
+                    </div>
+                    <div class="form-group">
+                        <label for="pepsi">ເປັບຊີ່:</label>
+                        <input type="number" id="pepsi" name="pepsi" placeholder="ຈໍານວນຂົ້ວ....." required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" id="cancelBtn">Cancel</button>
+                <button class="btn-print" id="printBtn">Print</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="apps-grid" id="appsGrid">
+            <!-- Cards จะถูกสร้างแบบไดนามิกจาก JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        // ข้อมูลแอปพลิเคชัน
+        const appsData = [
+            { name: 'Adobe Photoshop 2024', size: '4.82 GB', date: '1/1/2025', icon: '🤓' },
+            { name: 'AnyDesk', size: '2.00 MB', date: '10/31/2025', icon: '❄️' },
+            { name: 'Arduino IDE 2.3.6', size: '525 MB', date: '7/13/2025', icon: '🤡' },
+            { name: 'Autumn Colors', size: '23.5 MB', date: '1/30/2025', icon: 'img/emo.png' },
+            { name: 'Boom App 1.0.0', size: '326 MB', date: '12/10/2025', icon: '🍁' },
+            { name: 'Browser for SQL Server', size: '11.6 MB', date: '1/11/2025', icon: 'img/emo1.png' },
+            { name: 'Calculator', size: '72.0 kB', date: '12/22/2025', icon: '🎉' },
+            { name: 'Cisco Packet Tracer 8.2', size: '566 MB', date: '1/10/2025', icon: '🐠' },
+            { name: 'Clock', size: '16.0 kB', date: '11/11/2025', icon: '😂' },
+            { name: 'Copilot', size: '197 MB', date: '12/16/2025', icon: '🍑' },
+            { name: 'DB Browser for SQLite', size: '47.2 MB', date: '11/13/2025', icon: '🤔' },
+            { name: 'Feedback Hub', size: '1.43 MB', date: '11/7/2025', icon: 'img/d4.gif' },
+            { name: 'Git', size: '340 MB', date: '1/6/2025', icon: 'img/emo.png' },
+            //   { name: 'Google Chrome', size: '19.27 MB', date: '11/24/2025', icon: '🌐' },
+            //   { name: 'HttpToUsbBridge', size: '5.70 MB', date: '6/29/2025', icon: '🔗' },
+        ];
+
+        const gridContainer = document.getElementById('appsGrid');
+
+        appsData.forEach(app => {
+            const card = document.createElement('div');
+            card.className = 'app-card';
+
+            // ตรวจสอบว่า icon เป็น emoji หรือ image URL
+            let iconHTML = '';
+            if (app.icon.includes('.png') || app.icon.includes('.jpg') || app.icon.includes('.jpeg') || app.icon.includes('.gif')) {
+                // ถ้าเป็น image URL
+                iconHTML = `<img src="${app.icon}" alt="${app.name}" style="width: 55px; height: 60px; object-fit: contain;">`;
+            } else {
+                // ถ้าเป็น emoji
+                iconHTML = `<div style="font-size: 3rem;">${app.icon}</div>`;
+            }
+
+            card.innerHTML = `
+        <div class="app-icon">${iconHTML}</div>
+        <div class="app-name">${app.name}</div>
+        <div class="app-info">${app.size} | ${app.date}</div>
+        <button class="app-button">More</button>
+      `;
+            gridContainer.appendChild(card);
+        });
+
+        const hamburger = document.getElementById('hamburger');
+        const navMenu = document.getElementById('nav-menu');
+
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navMenu.classList.toggle('active');
+        });
+
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                navMenu.classList.remove('active');
+            });
+        });
+
+        // ฟังก์ชันค้นหา (สำหรับ PC/iPad)
+        document.querySelector('.search-btn').addEventListener('click', () => {
+            const query = document.querySelector('.search-input').value.trim();
+            if (query) {
+                alert('ค้นหา: ' + query);
+            }
+        });
+
+        document.querySelector('.search-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                document.querySelector('.search-btn').click();
+            }
+        });
+
+        // Modal Popup Functions
+        const modal = document.getElementById('orderModal');
+        const openModalBtn = document.getElementById('openModalBtn');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const printBtn = document.getElementById('printBtn');
+        const orderForm = document.getElementById('orderForm');
+        let printWindow = null; // เก็บ reference ของหน้าพิมพ์
+
+        // เปิด Modal
+        openModalBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            modal.style.display = 'block';
+        });
+
+        // ปิด Modal
+        cancelBtn.addEventListener('click', () => {
+            // ปิดหน้า about:blank ถ้ามี
+            if (printWindow && !printWindow.closed) {
+                printWindow.close();
+            }
+            modal.style.display = 'none';
+            orderForm.reset();
+        });
+
+        // ปิด Modal เมื่อคลิกนอก Modal
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+                orderForm.reset();
+            }
+        });
+
+        // Print Function
+        printBtn.addEventListener('click', () => {
+            const personCount = parseInt(document.getElementById('personCount').value) || 0;
+            const water = parseInt(document.getElementById('water').value) || 0;
+            const pepsi = parseInt(document.getElementById('pepsi').value) || 0;
+
+            // ราคา
+            const pricePerPerson = 50;
+            const priceWater = 10;
+            const pricePepsi = 15;
+
+            // คำนวณราคา
+            const totalPerson = personCount * pricePerPerson;
+            const totalWater = water * priceWater;
+            const totalPepsi = pepsi * pricePepsi;
+            const grandTotal = totalPerson + totalWater + totalPepsi;
+
+            const printContent = `
+
+<div style="
+  font-family: 'Courier New', monospace;
+  max-width: 280px;
+  margin: 0 auto;
+  padding: 4px;
+  font-size: 12px;
+  line-height: 0.6;        /* ลดช่องว่างระหว่างบรรทัด */
+">
+  <div style="text-align: center; margin-bottom: 2px;">
+    <div style="font-weight: bold; font-size: 14px;">ร้านค้าปลีก</div>
+    <div style="font-size: 11px; margin: 1px 0;">ที่อยู่: 123 ถนนหลัก เขตธุรกิจ</div>
+    <div style="font-size: 11px; margin: 1px 0;">โทร: 02-123-4567</div>
+  </div>
+
+  <div style="border-top: 1px dashed #000; margin: 4px 0 2px;"></div>
+
+  <div style="display: flex; justify-content: space-between; margin: 2px 0;">
+    <span>ใบเสร็จรับเงิน</span>
+    <span>${new Date().toISOString().split('T')[0]}</span>
+  </div>
+  <div style="display: flex; justify-content: space-between; margin: 2px 0;">
+    <span>เวลา:</span>
+     <span>${new Date().toLocaleTimeString('th-TH')}</span>
+  </div>
+
+  <div style="border-top: 1px dashed #000; margin: 4px 0 2px;"></div>
+
+  <!-- รายการสินค้า - ชิดมากที่สุด -->
+  <div style="margin: 3px 0; line-height: 1.2;">
+    <div style="display: flex; justify-content: space-between;">
+      <span>ຈໍານວນຄົນ:</span>
+      <span>${personCount} × 50฿ = ${totalPerson}฿</span>
+    </div>
+    <div style="display: flex; justify-content: space-between;">
+      <span>ນໍ້າດືມ:</span>
+      <span>${water} × 10฿ = ${totalWater}฿</span>
+    </div>
+    <div style="display: flex; justify-content: space-between;">
+      <span>ເປຊີ:</span>
+      <span>${pepsi} × 15฿ = ${totalPepsi}฿</span>
+    </div>
+    <div style="display: flex; justify-content: space-between;">
+      <span>ລວມທັງໝົດ:</span>
+      <span> ${grandTotal}฿</span>
+    </div>
+  </div>
+  
+
+  <div style="border-top: 1px dashed #000; margin: 4px 0 2px;"></div>
+
+  <div style="text-align: center; margin: 4px 0 2px; font-size: 11px;">
+    ขอบคุณที่ใช้บริการ
+  </div>
+</div>
+      
+
+       
+        
+      `;
+
+            const printWindow_ref = window.open('', '',);
+            printWindow_ref.document.write('<pre>' + printContent + '</pre>');
+            printWindow_ref.document.close();
+            printWindow = printWindow_ref; // เก็บ reference
+            printWindow_ref.print();
+
+            // ปิดหน้าพิมพ์โดยอัตโนมัติหลัง 2 วินาที
+            setTimeout(() => {
+                if (printWindow && !printWindow.closed) {
+                    printWindow.close();
+                }
+            }, 70);
+
+            // ปิด Modal หลังจาก Print
+            modal.style.display = 'none';
+            orderForm.reset();
+        });
+    </script>
+
+</body>
+
+</html>
